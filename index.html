@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <title>Kombinirani Kalkulator</title>
+
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: linear-gradient(135deg, #b9deff, #dce9ff);
+            margin: 0;
+            padding: 40px;
+        }
+
+        .wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2f4a7d;
+            margin-bottom: 25px;
+            font-size: 22px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #2f4a7d;
+        }
+
+        input {
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #aac3e3;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        input:focus {
+            border-color: #5c8bd6;
+            box-shadow: 0 0 6px rgba(92,139,214,0.4);
+        }
+
+        button {
+            width: 100%;
+            background: #5c8bd6;
+            color: white;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #466fb8;
+        }
+
+        #result1, #results2 {
+            margin-top: 20px;
+            padding: 15px;
+            background: #eef5ff;
+            border-left: 4px solid #5c8bd6;
+            border-radius: 8px;
+            display: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 15px;
+        }
+
+        th {
+            background: #5c8bd6;
+            color: white;
+            padding: 10px;
+            border: 1px solid #aac3e3;
+        }
+
+        td {
+            padding: 10px;
+            border: 1px solid #aac3e3;
+            background: #f8faff;
+        }
+
+        .formula-box {
+            background: #ffffff;
+            border: 2px solid #cccccc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            font-size: 17px;
+            line-height: 1.6;
+            text-align: center;
+            color: #2f4a7d;
+        }
+
+        .formula-title {
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .formula {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- LEFT SIDE – KALKULATOR 1 -->
+    <div>
+        <div class="container">
+            <h2>Kalkulator 1 – Ključ Alokacije</h2>
+
+            <div class="input-group"><label>Virtualna mašina (VM)</label><input id="vm" type="number"></div>
+            <div class="input-group"><label>Broj jezgri</label><input id="jezgre" type="number"></div>
+            <div class="input-group"><label>Disk</label><input id="disk" type="number"></div>
+            <div class="input-group"><label>Broj djelatnika</label><input id="djelatnici" type="number"></div>
+            <div class="input-group"><label>Backup</label><input id="backup" type="number"></div>
+
+            <button onclick="calculateLeft()">Izračunaj ključ</button>
+
+            <div id="result1"></div>
+        </div>
+
+        <!-- FORMULA 1 -->
+        <div class="formula-box">
+            <div class="formula-title">Kako se računa ključ alokacije?</div>
+            Ključ alokacije se računa kao:
+            <div class="formula">VM × Jezgre × Disk × Djelatnici × Backup</div>
+            <small>*Ako neko polje nije uneseno, računa se kao 1.*</small>
+        </div>
+
+        <!-- FORMULA 2 -->
+        <div class="formula-box">
+            <div class="formula-title">Kako se računa raspodjela po OJ?</div>
+
+            <strong>Korak 1 – Izračun postotka</strong><br>
+            <div class="formula">
+                Postotak OJ = Broj korisnika OJ ÷ Ukupno korisnika
+            </div>
+
+            <strong>Korak 2 – Izračun iznosa</strong><br>
+            <div class="formula">
+                Iznos OJ = Vrijednost ugovora × Ključ alokacije × Postotak OJ
+            </div>
+
+            <small>*Svaka OJ dobiva dio proporcionalno broju korisnika/licenci.*</small>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE – KALKULATOR 2 -->
+    <div class="container">
+        <h2>Kalkulator 2 – Raspodjela po OJ</h2>
+
+        <div class="input-group"><label>Vrijednost ugovora (EUR)</label><input id="ugovor" type="number"></div>
+        <div class="input-group"><label>Ključ alokacije</label><input id="kljuc" type="number"></div>
+
+        <div class="input-group">
+            <label>Ukupno korisnika/licenci</label>
+            <input id="totalUsersManual" type="number" placeholder="Automatski se računa, ali može se ručno promijeniti">
+        </div>
+
+        <h3 style="color:#2f4a7d;">Broj korisnika / broj licenci po OJ</h3>
+
+        <div class="input-group"><label>Distribucija</label><input id="distribucija" type="number" value="1037"></div>
+        <div class="input-group"><label>Opskrba</label><input id="opskrba" type="number" value="416"></div>
+        <div class="input-group"><label>Proizvodnja</label><input id="proizvodnja" type="number" value="552"></div>
+        <div class="input-group"><label>Ekonomski poslovi</label><input id="ekonomski" type="number" value="66"></div>
+        <div class="input-group"><label>Pravni poslovi</label><input id="pravni" type="number" value="57"></div>
+        <div class="input-group"><label>Razvoj</label><input id="razvoj" type="number" value="29"></div>
+        <div class="input-group"><label>Trgovina</label><input id="trgovina" type="number" value="19"></div>
+        <div class="input-group"><label>Direkcija Društva</label><input id="direkcija" type="number" value="105"></div>
+
+        <button onclick="calculateRight()">Izračunaj raspodjelu</button>
+
+        <div id="results2"></div>
+    </div>
+
+</div>
+
+
+<script>
+
+// LEFT CALCULATOR
+function calculateLeft() {
+    let vm = document.getElementById("vm").value || 1;
+    let jezgre = document.getElementById("jezgre").value || 1;
+    let disk = document.getElementById("disk").value || 1;
+    let djelatnici = document.getElementById("djelatnici").value || 1;
+    let backup = document.getElementById("backup").value || 1;
+
+    let result = vm * jezgre * disk * djelatnici * backup;
+
+    document.getElementById("result1").style.display = "block";
+    document.getElementById("result1").innerText = "Ključ alokacije: " + result;
+
+    document.getElementById("kljuc").value = result;
+}
+
+
+
+// RIGHT CALCULATOR
+function calculateRight() {
+
+    let ugovor = parseFloat(document.getElementById("ugovor").value);
+    let kljuc = parseFloat(document.getElementById("kljuc").value);
+    let manualTotal = document.getElementById("totalUsersManual").value;
+
+    if (!ugovor || !kljuc) {
+        alert("Unesi vrijednost ugovora i ključ alokacije!");
+        return;
+    }
+
+    let OJ = {
+        "Distribucija": parseFloat(document.getElementById("distribucija").value) || 0,
+        "Opskrba": parseFloat(document.getElementById("opskrba").value) || 0,
+        "Proizvodnja": parseFloat(document.getElementById("proizvodnja").value) || 0,
+        "Ekonomski poslovi": parseFloat(document.getElementById("ekonomski").value) || 0,
+        "Pravni poslovi": parseFloat(document.getElementById("pravni").value) || 0,
+        "Razvoj": parseFloat(document.getElementById("razvoj").value) || 0,
+        "Trgovina": parseFloat(document.getElementById("trgovina").value) || 0,
+        "Direkcija Društva": parseFloat(document.getElementById("direkcija").value) || 0
+    };
+
+    let totalAuto = Object.values(OJ).reduce((a,b) => a + b, 0);
+    let usedTotal = manualTotal ? parseFloat(manualTotal) : totalAuto;
+
+    // ako promijeniš OJ — automatski vraća totalna automatski
+    document.getElementById("totalUsersManual").placeholder = totalAuto;
+
+    let resultsDiv = document.getElementById("results2");
+    resultsDiv.style.display = "block";
+
+    let html = `
+        <table>
+            <tr>
+                <th>OJ</th>
+                <th>Postotak</th>
+                <th>Iznos (EUR)</th>
+            </tr>
+    `;
+
+    for (let [oj, users] of Object.entries(OJ)) {
+        let udio = users / usedTotal;
+        let iznos = ugovor * kljuc * udio;
+        let procent = (udio * 100).toFixed(2) + "%";
+
+        html += `
+            <tr>
+                <td>${oj}</td>
+                <td>${procent}</td>
+                <td>${iznos.toFixed(2)}</td>
+            </tr>
+        `;
+    }
+
+    html += "</table>";
+    resultsDiv.innerHTML = html;
+}
+
+</script>
+
+</body>
+</html>
+
